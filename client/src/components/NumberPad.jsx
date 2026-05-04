@@ -59,6 +59,7 @@ export default function NumberPad({ playerId, onSubmit, isLocked, lastFeedback }
         opacity: isLocked ? 0.45 : 1,
         pointerEvents: isLocked ? 'none' : 'auto',
         transition: 'opacity 0.3s ease',
+        touchAction: 'manipulation',
       }}
     >
       {/* Answer Display */}
