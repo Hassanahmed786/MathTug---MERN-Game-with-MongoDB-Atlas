@@ -108,7 +108,7 @@ body {
   align-items: center;
   padding: 1.5rem 1rem;
   position: relative;
-  z-index: 10;
+  z-index: 5;
   overflow: hidden;
   pointer-events: auto;
 }
@@ -116,11 +116,13 @@ body {
 .player-panel.p1 {
   background: linear-gradient(135deg, rgba(0,245,255,0.06) 0%, transparent 60%);
   border-right: 1px solid rgba(0, 245, 255, 0.15);
+  z-index: 5;
 }
 
 .player-panel.p2 {
   background: linear-gradient(225deg, rgba(255,0,128,0.06) 0%, transparent 60%);
   border-left: 1px solid rgba(255, 0, 128, 0.15);
+  z-index: 5;
 }
 
 /* ── Center Section ────────────────────────────────────────────────── */
@@ -133,7 +135,8 @@ body {
   justify-content: space-between;
   padding: 1rem;
   position: relative;
-  z-index: 10;
+  z-index: 1;
+  pointer-events: auto;
 }
 
 /* ── Background Stars ──────────────────────────────────────────────── */
@@ -163,6 +166,19 @@ body {
   touch-action: manipulation;
   position: relative;
   overflow: hidden;
+  pointer-events: auto;
+}
+
+/* Numberpad buttons always clickable */
+#numpad-player1-7, #numpad-player1-8, #numpad-player1-9,
+#numpad-player1-4, #numpad-player1-5, #numpad-player1-6,
+#numpad-player1-1, #numpad-player1-2, #numpad-player1-3,
+#numpad-player1-C, #numpad-player1-0, #numpad-player1-✓,
+#numpad-player2-7, #numpad-player2-8, #numpad-player2-9,
+#numpad-player2-4, #numpad-player2-5, #numpad-player2-6,
+#numpad-player2-1, #numpad-player2-2, #numpad-player2-3,
+#numpad-player2-C, #numpad-player2-0, #numpad-player2-✓ {
+  pointer-events: auto !important;
 }
 
 .btn-cyan {
@@ -571,10 +587,11 @@ body {
    LANDSCAPE-ONLY LAYOUT (Optimized for horizontal screens)
    ════════════════════════════════════════════════════════════════════════ */
 
-/* Ensure no scrolling in game layout - fit perfectly in viewport */
+/* Landscape-only layout - fit perfectly in viewport */
 .game-layout {
   overflow: hidden !important;
   height: 100dvh;
+  z-index: 1;
 }
 
 .player-panel {

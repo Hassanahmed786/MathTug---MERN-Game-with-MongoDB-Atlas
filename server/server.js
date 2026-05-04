@@ -17,7 +17,9 @@ const allowedOrigins = [
   process.env.CLIENT_URL || 'http://localhost:5173',
   'http://localhost:3000',
   'http://localhost:4173',
-  'http://localhost:5001'
+  'http://localhost:5001',
+  'http://localhost:5174',  // Vite dev server port
+  'http://localhost:5175',  // Fallback port
 ];
 
 app.use(cors({
