@@ -16,7 +16,7 @@ import { playCorrect, playWrong, playRopeSlide, playCriticalHit, startBGM, stopB
 import { getFunnyComment } from '../utils/funnyComments';
 import { useBot } from '../hooks/useBot';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5000';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5001' : window.location.origin);
 
 // ── Player 2 local socket hook ─────────────────────────────────────────────
 function useP2Socket(gameId, playerName, isLocal) {
@@ -26,38 +26,63 @@ function useP2Socket(gameId, playerName, isLocal) {
 
   useEffect(() => {
     if (!gameId || !isLocal) return;
+    console.log('🎮 P2 Socket: Connecting to SERVER_URL:', SERVER_URL);
     const socket = io(SERVER_URL, { transports: ['websocket', 'polling'] });
     socketRef.current = socket;
 
     socket.on('connect', () => {
+      console.log('🔌 Player 2 socket connected:', socket.id);
       socket.emit('join:game', { gameId, playerId: 'player2', playerName });
     });
 
+    socket.on('connect_error', (error) => {
+      console.error('❌ P2 Socket connect_error:', error);
+    });
+
     socket.on('game:question', () => {
+      console.log('❓ P2 received game:question');
       setP2Locked(false);
       setP2Feedback(null);
     });
 
     socket.on('game:answerFeedback', ({ correct, playerId }) => {
       if (playerId === 'player2') {
+        console.log('✅ P2 received answerFeedback:', correct ? 'CORRECT' : 'WRONG');
         setP2Feedback(correct ? 'correct' : 'wrong');
         setP2Locked(true);
       }
     });
 
     socket.on('game:roundResult', () => {
+      console.log('📊 P2 received game:roundResult');
       setP2Locked(false);
       setP2Feedback(null);
+    });
+
+    socket.on('error', (error) => {
+      console.error('❌ P2 socket error:', error);
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.warn('⚠️ P2 socket disconnected:', reason);
     });
 
     return () => { socket.disconnect(); socketRef.current = null; };
   }, [gameId, playerName]); // eslint-disable-line
 
   const submitP2 = useCallback((answer) => {
+    if (!socketRef.current) {
+      console.error('❌ P2 socket ref not available');
+      return;
+    }
+    console.log('📤 P2 submitting answer:', answer, 'Socket connected:', socketRef.current?.connected);
     if (socketRef.current?.connected) {
       socketRef.current.emit('game:submitAnswer', { gameId, playerId: 'player2', answer });
-      setP2Locked(true);
+    } else {
+      console.warn('⚠️ P2 socket not connected, attempting to emit anyway');
+      socketRef.current.emit('game:submitAnswer', { gameId, playerId: 'player2', answer });
     }
+    setP2Locked(true);
   }, [gameId]);
 
   return { p2Locked, p2Feedback, submitP2 };
@@ -189,7 +214,9 @@ export default function Game() {
 
   // AI Bot Integration
   const isBotMode = isLocal && playerNames.player2 === 'AI Bot';
-  useBot(id, phase, currentQuestion, submitP2, difficulty);
+  if (isBotMode) {
+    useBot(id, phase, currentQuestion, submitP2, difficulty);
+  }
 
   // Timer
   const { timeLeft, isUrgent, start: startTimer, stop: stopTimer } = useTimer(15);
