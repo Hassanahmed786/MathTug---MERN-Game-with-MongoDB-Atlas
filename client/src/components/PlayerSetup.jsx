@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import useGameStore from '../store/gameStore';
 import { resumeAudio } from '../utils/soundEffects';
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:5001';
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5001' : '');
 
 const DIFFICULTY_OPTIONS = ['easy', 'medium', 'hard'];
 const ROUND_OPTIONS = [5, 10, 15];
