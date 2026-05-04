@@ -49,7 +49,7 @@ Branch: main
 
 **Build Command**:
 ```bash
-cd client && npm ci --include=dev && npm run build && cd ../server && npm ci
+cd client && npm install && npm run build && cd ../server && npm install
 ```
 
 **Start Command**:

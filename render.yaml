@@ -2,7 +2,7 @@ services:
   - type: web
     name: mathtug-server
     env: node
-    buildCommand: "cd client && npm ci --include=dev && npm run build && cd ../server && npm ci"
+    buildCommand: "cd client && npm install && npm run build && cd ../server && npm install"
     startCommand: "cd server && NODE_ENV=production node server.js"
     envVars:
       - key: NODE_VERSION
