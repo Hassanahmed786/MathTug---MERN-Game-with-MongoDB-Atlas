@@ -3,17 +3,24 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { usePlayerStore } from '../store/usePlayerStore';
 
-// Animated particle
+// Enhanced animated particle with more dramatic effects
 function Particle({ x, y, delay, size, color }) {
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0 }}
+      initial={{ opacity: 0, scale: 0, y: 0 }}
       animate={{
-        opacity: [0, 0.8, 0],
-        scale: [0, 1, 0.5],
-        y: [0, -30, -60],
+        opacity: [0, 0.9, 0.4, 0],
+        scale: [0, 1, 0.8, 0.5],
+        y: [0, -50, -100],
+        x: [0, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 60],
       }}
-      transition={{ duration: 3, delay, repeat: Infinity, repeatDelay: Math.random() * 2 }}
+      transition={{ 
+        duration: 4 + Math.random() * 2, 
+        delay, 
+        repeat: Infinity, 
+        repeatDelay: Math.random() * 3,
+        ease: 'easeOut'
+      }}
       style={{
         position: 'absolute',
         left: `${x}%`,
@@ -22,20 +29,46 @@ function Particle({ x, y, delay, size, color }) {
         height: size,
         borderRadius: '50%',
         background: color,
-        boxShadow: `0 0 ${size * 2}px ${color}`,
+        boxShadow: `0 0 ${size * 3}px ${color}, 0 0 ${size * 6}px ${color}40`,
         pointerEvents: 'none',
+        filter: 'blur(0.5px)',
       }}
     />
   );
 }
 
-const particles = Array.from({ length: 20 }, (_, i) => ({
+// Grid pattern background
+function GridPattern() {
+  return (
+    <svg 
+      style={{
+        position: 'absolute',
+        inset: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        opacity: 0.05,
+        zIndex: 1,
+      }} 
+      preserveAspectRatio="xMidYMid slice"
+    >
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,245,255,0.3)" strokeWidth="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>
+  );
+}
+
+const particles = Array.from({ length: 25 }, (_, i) => ({
   id: i,
   x: Math.random() * 100,
-  y: 30 + Math.random() * 60,
-  delay: Math.random() * 4,
-  size: 4 + Math.random() * 8,
-  color: i % 2 === 0 ? 'rgba(0,245,255,0.7)' : 'rgba(255,0,128,0.7)',
+  y: 20 + Math.random() * 70,
+  delay: Math.random() * 5,
+  size: 3 + Math.random() * 12,
+  color: i % 3 === 0 ? 'rgba(0,245,255,0.8)' : i % 3 === 1 ? 'rgba(255,0,128,0.8)' : 'rgba(255,215,0,0.6)',
 }));
 
 export default function Home() {
@@ -44,195 +77,303 @@ export default function Home() {
 
   return (
     <div className="home-page stars-bg">
-      {/* Profile Widget */}
+      {/* Grid Pattern Background */}
+      <GridPattern />
+      
+      {/* Enhanced background gradients */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(circle at 20% 50%, rgba(0,245,255,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,0,128,0.08) 0%, transparent 50%)',
+        pointerEvents: 'none',
+        zIndex: 0,
+      }} />
+
+      {/* Profile Widget - Enhanced */}
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
+        initial={{ opacity: 0, x: 20, y: -20 }}
+        animate={{ opacity: 1, x: 0, y: 0 }}
+        whileHover={{ scale: 1.05 }}
         style={{
           position: 'absolute',
           top: '20px',
           right: '20px',
           zIndex: 100,
           background: 'rgba(255,255,255,0.05)',
-          backdropFilter: 'blur(10px)',
+          backdropFilter: 'blur(12px)',
           border: '1px solid rgba(255,255,255,0.1)',
-          padding: '0.6rem 1rem',
+          padding: '0.8rem 1.2rem',
           borderRadius: '16px',
           display: 'flex',
           alignItems: 'center',
           gap: '0.8rem',
+          boxShadow: '0 8px 32px rgba(0,245,255,0.1)',
         }}
       >
         <div style={{
-          width: '36px', height: '36px', borderRadius: '50%',
+          width: '40px', height: '40px', borderRadius: '50%',
           background: 'linear-gradient(135deg, var(--gold), #aa8800)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontWeight: '900', color: '#0a0a1a', fontSize: '1rem',
-          boxShadow: '0 0 15px rgba(255,215,0,0.4)',
+          fontWeight: '900', color: '#0a0a1a', fontSize: '1.1rem',
+          boxShadow: '0 0 20px rgba(255,215,0,0.6)',
         }}>
           {level}
         </div>
         <div style={{ textAlign: 'left' }}>
-          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>LVL {level}</div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--gold)', fontWeight: '700' }}>{xp} XP</div>
+          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: '700' }}>LVL {level}</div>
+          <div style={{ fontSize: '0.9rem', color: 'var(--gold)', fontWeight: '700' }}>{xp} XP</div>
         </div>
       </motion.div>
-      {/* Background particles */}
-      {particles.map((p) => (
-        <Particle key={p.id} {...p} />
-      ))}
 
-      {/* Glow orbs */}
-      <div style={{
-        position: 'absolute', left: '10%', top: '20%',
-        width: '300px', height: '300px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(0,245,255,0.08) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
-      <div style={{
-        position: 'absolute', right: '10%', bottom: '20%',
-        width: '300px', height: '300px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(255,0,128,0.08) 0%, transparent 70%)',
-        pointerEvents: 'none',
-      }} />
+      {/* Background particles - Enhanced */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}>
+        {particles.map((p) => (
+          <Particle key={p.id} {...p} />
+        ))}
+      </div>
 
-      {/* Logo */}
+      {/* Animated glow orbs */}
       <motion.div
-        initial={{ opacity: 0, y: -40, scale: 0.8 }}
+        animate={{ 
+          scale: [1, 1.1, 1],
+          opacity: [0.08, 0.15, 0.08],
+        }}
+        transition={{ duration: 8, repeat: Infinity }}
+        style={{
+          position: 'absolute', left: '10%', top: '20%',
+          width: '350px', height: '350px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(0,245,255,0.1) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 1,
+        }} 
+      />
+      <motion.div
+        animate={{ 
+          scale: [1, 1.15, 1],
+          opacity: [0.08, 0.12, 0.08],
+        }}
+        transition={{ duration: 10, repeat: Infinity, delay: 1 }}
+        style={{
+          position: 'absolute', right: '10%', bottom: '20%',
+          width: '350px', height: '350px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(255,0,128,0.1) 0%, transparent 70%)',
+          pointerEvents: 'none',
+          zIndex: 1,
+        }} 
+      />
+
+      {/* Logo Section - Enhanced with more animation */}
+      <motion.div
+        initial={{ opacity: 0, y: -50, scale: 0.7 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 18 }}
+        transition={{ type: 'spring', stiffness: 120, damping: 15, delay: 0.1 }}
         style={{ textAlign: 'center', zIndex: 10 }}
       >
-        {/* Rope icon */}
+        {/* Enhanced Rope icon with rotation */}
         <motion.div
-          animate={{ rotate: [-3, 3, -3] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          style={{ fontSize: '3.5rem', marginBottom: '0.5rem' }}
+          animate={{ 
+            rotate: [-5, 5, -5],
+            y: [0, -8, 0],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ 
+            fontSize: '4.5rem', 
+            marginBottom: '1rem',
+            filter: 'drop-shadow(0 0 20px rgba(0,245,255,0.4)) drop-shadow(0 0 10px rgba(255,0,128,0.2))',
+          }}
         >
           🪢
         </motion.div>
 
         <h1 className="home-logo">MathTug</h1>
-        <p className="home-subtitle">Tug-of-War Number Battle</p>
+        <p className="home-subtitle">⚔️ Tug-of-War Number Battle ⚔️</p>
+        
+        {/* Animated underline */}
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: 200 }}
+          transition={{ delay: 0.5, duration: 1, type: 'spring' }}
+          style={{
+            height: '3px',
+            background: 'linear-gradient(90deg, var(--cyan), var(--gold), var(--pink))',
+            borderRadius: '2px',
+            margin: '1.5rem auto 0',
+            boxShadow: '0 0 20px rgba(255,215,0,0.6)',
+          }} 
+        />
       </motion.div>
 
-      {/* Player preview */}
+      {/* Player preview - Enhanced */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.4 }}
+        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 0.3, type: 'spring', stiffness: 100 }}
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '2rem',
+          gap: '2.5rem',
           zIndex: 10,
-          marginTop: '1rem',
+          marginTop: '2rem',
         }}
       >
-        {/* P1 avatar */}
+        {/* P1 avatar - Enhanced */}
         <motion.div
-          animate={{ x: [-4, 0, -4] }}
+          animate={{ 
+            x: [-6, 0, -6],
+            y: [0, -4, 0],
+          }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           style={{
-            width: '70px', height: '70px', borderRadius: '50%',
+            width: '85px', height: '85px', borderRadius: '50%',
             background: 'linear-gradient(135deg, var(--cyan), #004466)',
-            border: '2px solid var(--cyan)',
-            boxShadow: '0 0 20px var(--cyan-glow)',
+            border: '3px solid var(--cyan)',
+            boxShadow: '0 0 30px var(--cyan-glow), inset 0 0 20px rgba(0,245,255,0.2)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '2rem',
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
           }}
         >🧠</motion.div>
 
-        {/* Rope visual */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+        {/* Rope visual - Enhanced */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
           <motion.div 
-            animate={{ scale: [1, 1.1, 1] }} 
+            animate={{ 
+              scale: [1, 1.15, 1],
+              textShadow: [
+                '0 0 10px rgba(255,215,0,0.5)',
+                '0 0 30px rgba(255,215,0,0.8)',
+                '0 0 10px rgba(255,215,0,0.5)',
+              ],
+            }} 
             transition={{ duration: 1.5, repeat: Infinity }}
             className="home-vs"
-            style={{ margin: '0.5rem 0' }}
+            style={{ margin: '0.5rem 0', fontSize: '1.3rem' }}
           >VS</motion.div>
+          
+          {/* Animated rope */}
           <motion.div 
-            initial={{ width: 0 }}
-            animate={{ width: 120 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
+            initial={{ width: 0, opacity: 0 }}
+            animate={{ width: 140, opacity: 1 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
             style={{
-              height: '4px',
-              background: 'linear-gradient(90deg, var(--cyan), var(--gold), var(--pink))',
-              borderRadius: '2px',
-              boxShadow: '0 0 10px rgba(255,215,0,0.5)',
+              height: '5px',
+              background: 'linear-gradient(90deg, var(--cyan), #00ff88, var(--gold), #ff6600, var(--pink))',
+              borderRadius: '3px',
+              boxShadow: '0 0 15px rgba(255,215,0,0.8), 0 0 30px rgba(0,245,255,0.4)',
+            }} 
+          />
+          
+          {/* Rope glow effect */}
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.3, 0.8, 0.3] }}
+            transition={{ delay: 1, duration: 2, repeat: Infinity }}
+            style={{
+              width: '140px',
+              height: '5px',
+              background: 'rgba(255,215,0,0.3)',
+              borderRadius: '3px',
+              filter: 'blur(4px)',
+              marginTop: '-5px',
             }} 
           />
         </div>
 
-        {/* P2 avatar */}
+        {/* P2 avatar - Enhanced */}
         <motion.div
-          animate={{ x: [4, 0, 4] }}
+          animate={{ 
+            x: [6, 0, 6],
+            y: [0, -4, 0],
+          }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           style={{
-            width: '70px', height: '70px', borderRadius: '50%',
+            width: '85px', height: '85px', borderRadius: '50%',
             background: 'linear-gradient(135deg, var(--pink), #440022)',
-            border: '2px solid var(--pink)',
-            boxShadow: '0 0 20px var(--pink-glow)',
+            border: '3px solid var(--pink)',
+            boxShadow: '0 0 30px var(--pink-glow), inset 0 0 20px rgba(255,0,128,0.2)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '2rem',
+            fontSize: '2.5rem',
+            fontWeight: 'bold',
           }}
         >🎯</motion.div>
       </motion.div>
 
-      {/* Feature pills */}
+      {/* Feature pills - Enhanced */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
-        style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center', zIndex: 10, margin: '1rem 0' }}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7, staggerChildren: 0.1 }}
+        style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', zIndex: 10, margin: '2rem 0' }}
       >
-        {['⚡ Real-time Multiplayer', '🎯 3 Difficulty Levels', '🏆 Leaderboard', '🎵 Sound Effects'].map((feat, index) => (
-          <motion.span 
-            key={feat} 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 + index * 0.1, type: 'spring' }}
-            whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.1)' }}
+        {[
+          { icon: '⚡', text: 'Real-time Multiplayer' },
+          { icon: '🎯', text: '3 Difficulty Levels' },
+          { icon: '🏆', text: 'Leaderboard' },
+          { icon: '🎵', text: 'Sound Effects' },
+        ].map((feat, index) => (
+          <motion.div 
+            key={feat.text} 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.7 + index * 0.15, type: 'spring' }}
+            whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.15)' }}
             style={{
               fontFamily: 'var(--font-body)',
-              fontSize: 'clamp(0.7rem, 2vw, 0.8rem)',
-              padding: '0.4rem 1rem',
+              fontSize: '0.85rem',
+              padding: '0.6rem 1.2rem',
               borderRadius: '50px',
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.1)',
-              color: 'var(--text-muted)',
+              background: 'rgba(255,255,255,0.07)',
+              border: '1.5px solid rgba(255,255,255,0.15)',
+              color: 'var(--text-primary)',
               letterSpacing: '0.05em',
               cursor: 'default',
+              fontWeight: '600',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.2)',
+              transition: 'all 0.3s ease',
             }}>
-            {feat}
-          </motion.span>
+            <span style={{ marginRight: '0.5rem', fontSize: '1.1rem' }}>{feat.icon}</span>
+            {feat.text}
+          </motion.div>
         ))}
       </motion.div>
 
-      {/* CTA Buttons */}
+      {/* CTA Buttons - Enhanced */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.75 }}
-        style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center', zIndex: 10 }}
+        transition={{ delay: 0.9 }}
+        style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', zIndex: 10, marginTop: '1.5rem' }}
       >
         <motion.button
           id="home-start-btn"
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
+          whileHover={{ scale: 1.08, boxShadow: '0 0 50px rgba(0,245,255,0.6)' }}
+          whileTap={{ scale: 0.92 }}
           className="btn btn-cyan"
           onClick={() => navigate('/setup')}
-          style={{ fontSize: '1.05rem', padding: '0.9rem 2.5rem' }}
+          style={{ 
+            fontSize: '1.1rem', 
+            padding: '1rem 2.8rem',
+            fontWeight: '800',
+            letterSpacing: '0.1em',
+            position: 'relative',
+            overflow: 'hidden',
+          }}
         >
           ⚡ Start New Game
         </motion.button>
+        
         <motion.button
           id="home-leaderboard-btn"
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
+          whileHover={{ scale: 1.08, boxShadow: '0 0 40px rgba(255,0,128,0.5)' }}
+          whileTap={{ scale: 0.92 }}
           className="btn btn-ghost"
           onClick={() => navigate('/leaderboard')}
-          style={{ fontSize: '1.05rem', padding: '0.9rem 2rem' }}
+          style={{ 
+            fontSize: '1.1rem', 
+            padding: '1rem 2.3rem',
+            fontWeight: '800',
+            letterSpacing: '0.1em',
+          }}
         >
           📊 Leaderboard
         </motion.button>

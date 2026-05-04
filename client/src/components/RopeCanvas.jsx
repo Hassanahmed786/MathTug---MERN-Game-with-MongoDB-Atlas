@@ -7,6 +7,7 @@ import * as THREE from 'three';
 // ── Humanoid Mesh ────────────────────────────────────────────────────────────
 function Humanoid({ position, color, isP1, ropePosition, emote }) {
   const groupRef = useRef();
+  const torsoRef = useRef();
   
   // intensity > 0 means pulling hard (winning), intensity < 0 means getting dragged.
   // ropePosition goes -5 (P1 wins) to +5 (P2 wins).
@@ -15,62 +16,113 @@ function Humanoid({ position, color, isP1, ropePosition, emote }) {
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     if (groupRef.current) {
-      // If pulling (intensity > 0), lean backward (away from center).
-      // P1 center is right (+x), so backward is -z rotation.
-      const lean = intensity > 0 ? -0.8 * intensity : -1.2 * intensity;
-      const sway = Math.sin(t * (8 + intensity * 6)) * 0.05;
+      // Dramatic lean based on winning/losing
+      const baseLean = intensity > 0 ? -1.2 * intensity : -1.6 * intensity;
+      const sway = Math.sin(t * (6 + Math.abs(intensity) * 4)) * (0.08 + intensity * 0.1);
+      const bounce = Math.sin(t * 3) * 0.02;
       
-      groupRef.current.rotation.z = isP1 ? (lean + sway) : -(lean + sway);
+      groupRef.current.rotation.z = isP1 ? (baseLean + sway + bounce) : -(baseLean + sway + bounce);
+      groupRef.current.position.y = Math.sin(t * 2.5) * 0.08;
+    }
+    
+    if (torsoRef.current && Math.abs(intensity) > 0.3) {
+      torsoRef.current.scale.z = 1 + Math.sin(t * 4) * 0.08 * Math.abs(intensity);
     }
   });
 
   const dir = isP1 ? 1 : -1;
+  const glowIntensity = Math.abs(intensity) > 0.5 ? 1.5 : 0.8;
 
   return (
-    <group ref={groupRef} position={position} scale={1.8}>
+    <group ref={groupRef} position={position} scale={1.9}>
+      {/* Glow aura when pulling */}
+      {Math.abs(intensity) > 0.3 && (
+        <mesh>
+          <sphereGeometry args={[0.4, 16, 16]} />
+          <meshStandardMaterial 
+            color={color} 
+            emissive={color} 
+            emissiveIntensity={0.2} 
+            transparent 
+            opacity={0.1}
+            wireframe={false}
+          />
+        </mesh>
+      )}
+      
       {/* Torso */}
-      <mesh position={[0, 0.4, 0]} rotation={[0, 0, dir * 0.15]}>
+      <mesh ref={torsoRef} position={[0, 0.4, 0]} rotation={[0, 0, dir * 0.15]}>
         <cylinderGeometry args={[0.12, 0.09, 0.7]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.3} metalness={0.6} roughness={0.3} />
+        <meshStandardMaterial 
+          color={color} 
+          emissive={color} 
+          emissiveIntensity={glowIntensity} 
+          metalness={0.7} 
+          roughness={0.2}
+        />
       </mesh>
-      {/* Head */}
+      
+      {/* Head with enhanced glow */}
       <mesh position={[dir * -0.1, 0.85, 0]}>
         <sphereGeometry args={[0.16]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={1.2} />
-        <pointLight color={color} intensity={0.5} distance={1.5} />
+        <meshStandardMaterial 
+          color={color} 
+          emissive={color} 
+          emissiveIntensity={1.4}
+          metalness={0.8}
+          roughness={0.1}
+        />
+        <pointLight color={color} intensity={0.8} distance={2} />
       </mesh>
-      {/* Floating Emote */}
+      
+      {/* Floating Emote - Larger and more visible */}
       {emote && (
         <Html position={[0, 1.8, 0]} center>
           <div style={{
-            fontSize: '3rem',
+            fontSize: '2.8rem',
             animation: 'floatUp 2s ease-out forwards',
             pointerEvents: 'none',
-            textShadow: '0 0 20px rgba(255,255,255,0.8)'
+            textShadow: '0 0 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.5)',
+            fontWeight: 'bold',
+            filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.8))'
           }}>
             {emote}
           </div>
         </Html>
       )}
-      {/* Front Arm (holding rope) */}
+      
+      {/* Front Arm (holding rope) - Enhanced */}
       <mesh position={[dir * 0.25, 0.4, 0.15]} rotation={[0, 0, dir * Math.PI / 2.4]}>
-        <cylinderGeometry args={[0.04, 0.03, 0.6]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.2} />
+        <cylinderGeometry args={[0.045, 0.035, 0.65]} />
+        <meshStandardMaterial 
+          color={color} 
+          emissive={color} 
+          emissiveIntensity={0.4}
+          metalness={0.6}
+        />
       </mesh>
-      {/* Back Arm (holding rope) */}
+      
+      {/* Back Arm (holding rope) - Enhanced */}
       <mesh position={[dir * 0.25, 0.4, -0.15]} rotation={[0, 0, dir * Math.PI / 2.4]}>
-        <cylinderGeometry args={[0.04, 0.03, 0.6]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.2} />
+        <cylinderGeometry args={[0.045, 0.035, 0.65]} />
+        <meshStandardMaterial 
+          color={color} 
+          emissive={color} 
+          emissiveIntensity={0.4}
+          metalness={0.6}
+        />
       </mesh>
+      
       {/* Front Leg (braced) */}
       <mesh position={[dir * 0.15, 0.0, 0.1]} rotation={[0, 0, dir * 0.4]}>
-        <cylinderGeometry args={[0.05, 0.04, 0.4]} />
-        <meshStandardMaterial color={color} />
+        <cylinderGeometry args={[0.05, 0.04, 0.45]} />
+        <meshStandardMaterial color={color} metalness={0.5} />
       </mesh>
+      
       {/* Back Leg (pushing) */}
       <mesh position={[dir * -0.2, 0.0, -0.1]} rotation={[0, 0, dir * -0.3]}>
-        <cylinderGeometry args={[0.05, 0.04, 0.4]} />
-        <meshStandardMaterial color={color} />
+        <cylinderGeometry args={[0.05, 0.04, 0.45]} />
+        <meshStandardMaterial color={color} metalness={0.5} />
       </mesh>
     </group>
   );

@@ -135,14 +135,18 @@ function ScoreColumn({ player, name, score, roundHistory, totalRounds }) {
 }
 
 export default function ScoreBoard({ player1, player2, scores, roundHistory, totalRounds }) {
+  const ropePositionPercent = ((scores?.player2 || 0) - (scores?.player1 || 0)) / totalRounds;
+  const cyanWidth = Math.max(5, (scores?.player1 || 0) / totalRounds * 100);
+  const pinkWidth = Math.max(5, (scores?.player2 || 0) / totalRounds * 100);
+
   return (
     <div style={{
       display: 'grid',
       gridTemplateColumns: '1fr auto 1fr',
       alignItems: 'center',
       width: '100%',
-      padding: '0.75rem 1rem',
-      gap: '0.5rem',
+      padding: '1rem 1rem',
+      gap: '0.75rem',
     }}>
       <ScoreColumn
         player="player1"
@@ -152,14 +156,74 @@ export default function ScoreBoard({ player1, player2, scores, roundHistory, tot
         totalRounds={totalRounds || 10}
       />
 
+      {/* Enhanced Tug Visual */}
       <div style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: '0.9rem',
-        fontWeight: '900',
-        color: 'var(--gold)',
-        textShadow: '0 0 12px rgba(255,215,0,0.5)',
-        letterSpacing: '0.1em',
-      }}>VS</div>
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.4rem',
+        minWidth: '120px',
+      }}>
+        {/* Rope tug bar */}
+        <div style={{
+          width: '100%',
+          height: '24px',
+          background: 'linear-gradient(90deg, rgba(0,245,255,0.1) 0%, rgba(255,0,128,0.1) 100%)',
+          border: '2px solid rgba(255,255,255,0.2)',
+          borderRadius: '12px',
+          overflow: 'hidden',
+          boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)',
+          position: 'relative',
+        }}>
+          {/* P1 side */}
+          <div style={{
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            height: '100%',
+            width: `${cyanWidth}%`,
+            background: 'linear-gradient(90deg, var(--cyan), #00a8b5)',
+            boxShadow: '0 0 20px var(--cyan-glow)',
+            transition: 'width 0.3s ease',
+            borderRadius: '10px 0 0 10px',
+          }} />
+          {/* P2 side */}
+          <div style={{
+            position: 'absolute',
+            right: '0',
+            top: '0',
+            height: '100%',
+            width: `${pinkWidth}%`,
+            background: 'linear-gradient(90deg, #cc0066, var(--pink))',
+            boxShadow: 'inset 0 0 20px var(--pink-glow)',
+            transition: 'width 0.3s ease',
+            borderRadius: '0 10px 10px 0',
+          }} />
+          {/* Center knot */}
+          <div style={{
+            position: 'absolute',
+            left: `${50 + ropePositionPercent * 25}%`,
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '8px',
+            height: '100%',
+            background: 'linear-gradient(90deg, var(--cyan), var(--pink))',
+            boxShadow: '0 0 15px rgba(255,255,255,0.8), 0 0 30px rgba(255,215,0,0.5)',
+            transition: 'left 0.3s ease',
+            borderRadius: '2px',
+            zIndex: 10,
+          }} />
+        </div>
+        {/* VS text */}
+        <div style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: '0.9rem',
+          fontWeight: '900',
+          color: 'var(--gold)',
+          textShadow: '0 0 12px rgba(255,215,0,0.5)',
+          letterSpacing: '0.1em',
+        }}>VS</div>
+      </div>
 
       <ScoreColumn
         player="player2"

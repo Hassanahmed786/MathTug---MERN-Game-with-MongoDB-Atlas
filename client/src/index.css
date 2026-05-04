@@ -204,14 +204,18 @@ body {
 }
 
 .btn-ghost {
-  background: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-glass);
+  background: rgba(255, 0, 128, 0.08);
+  color: var(--pink);
+  border: 2px solid rgba(255, 0, 128, 0.3);
+  box-shadow: 0 0 20px rgba(255, 0, 128, 0.2), inset 0 0 15px rgba(255, 0, 128, 0.05);
+  transition: all 0.3s ease;
 }
 
 .btn-ghost:hover {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(255,255,255,0.2);
+  background: rgba(255, 0, 128, 0.2);
+  border-color: var(--pink);
+  box-shadow: 0 0 40px rgba(255, 0, 128, 0.5), inset 0 0 25px rgba(255, 0, 128, 0.1);
+  transform: translateY(-2px);
 }
 
 /* ── Input Fields ──────────────────────────────────────────────────── */
@@ -564,8 +568,24 @@ body {
 }
 
 @keyframes floatUp {
-  0% { transform: translateY(0); opacity: 1; }
-  100% { transform: translateY(-50px); opacity: 0; }
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(-80px) scale(0.6); opacity: 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,245,255,0.5); }
+  50% { box-shadow: 0 0 40px rgba(0,245,255,0.9); }
+}
+
+@keyframes ropeShine {
+  0%, 100% { background-position: 0% 0%; }
+  50% { background-position: 100% 0%; }
+}
+
+@keyframes tugPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+  50% { box-shadow: 0 0 30px rgba(255,215,0,0.9); }
 }
 
 .sudden-death-bg {
