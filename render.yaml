@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: mathtug-server
+    env: node
+    buildCommand: "cd client && npm install && npm run build && cd ../server && npm install"
+    startCommand: "cd server && NODE_ENV=production node server.js"
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: PORT
+        value: 5001
+      - key: MONGO_URI
+        sync: false
+      - key: CLIENT_URL
+        sync: false
+      - key: NODE_ENV
+        value: production
