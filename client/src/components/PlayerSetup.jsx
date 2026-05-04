@@ -16,6 +16,8 @@ const DIFFICULTY_LABELS = {
   hard: { label: 'Hard', desc: '1–99, all ops', color: '#ff4444' },
 };
 
+import BackgroundEffects from './BackgroundEffects';
+
 export default function PlayerSetup() {
   const navigate = useNavigate();
   const { setGameId, setJoinCode, setPlayerId, setIsLocal, setPlayerNames, setDifficulty, setTotalRounds, setPhase } = useGameStore();
@@ -112,37 +114,40 @@ export default function PlayerSetup() {
 
   return (
     <div className="setup-container stars-bg">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-        <div style={{
-          fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: '900',
-          background: 'linear-gradient(135deg, var(--cyan), var(--pink))',
-          WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
-        }}>
-          Player Setup
+      <BackgroundEffects />
+      
+      <div style={{ position: 'relative', zIndex: 10, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: '1.5rem', zIndex: 10 }}>
+          <div style={{
+            fontFamily: 'var(--font-display)', fontSize: 'clamp(1.4rem, 3vw, 2rem)', fontWeight: '900',
+            background: 'linear-gradient(135deg, var(--cyan), var(--pink))',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+          }}>
+            Player Setup
+          </div>
+        </motion.div>
+
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', justifyContent: 'center' }}>
+          <motion.button 
+            whileTap={{ scale: 0.95 }}
+            className={`btn ${activeTab === 'host' ? 'btn-cyan' : 'btn-ghost'}`}
+            onClick={() => setActiveTab('host')}
+            style={{ padding: '0.6rem 2rem' }}
+          >
+            ➕ Host Game
+          </motion.button>
+          <motion.button 
+            whileTap={{ scale: 0.95 }}
+            className={`btn ${activeTab === 'join' ? 'btn-pink' : 'btn-ghost'}`}
+            onClick={() => setActiveTab('join')}
+            style={{ padding: '0.6rem 2rem' }}
+          >
+            🤝 Join Game
+          </motion.button>
         </div>
-      </motion.div>
 
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', justifyContent: 'center' }}>
-        <motion.button 
-          whileTap={{ scale: 0.95 }}
-          className={`btn ${activeTab === 'host' ? 'btn-cyan' : 'btn-ghost'}`}
-          onClick={() => setActiveTab('host')}
-          style={{ padding: '0.6rem 2rem' }}
-        >
-          ➕ Host Game
-        </motion.button>
-        <motion.button 
-          whileTap={{ scale: 0.95 }}
-          className={`btn ${activeTab === 'join' ? 'btn-pink' : 'btn-ghost'}`}
-          onClick={() => setActiveTab('join')}
-          style={{ padding: '0.6rem 2rem' }}
-        >
-          🤝 Join Game
-        </motion.button>
-      </div>
-
-      <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait">
         {activeTab === 'host' ? (
           <motion.div key="host" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}>
             <div className="setup-grid" style={{ gridTemplateColumns: mode === 'local' ? '1fr auto 1fr' : '1fr', maxWidth: mode === 'local' ? '800px' : '400px', margin: '0 auto' }}>
@@ -278,6 +283,7 @@ export default function PlayerSetup() {
           ⚠️ {error}
         </div>
       )}
+      </div>
     </div>
   );
 }

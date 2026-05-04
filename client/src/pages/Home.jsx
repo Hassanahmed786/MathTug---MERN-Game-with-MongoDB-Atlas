@@ -3,73 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { usePlayerStore } from '../store/usePlayerStore';
 
-// Enhanced animated particle with more dramatic effects
-function Particle({ x, y, delay, size, color }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0, y: 0 }}
-      animate={{
-        opacity: [0, 0.9, 0.4, 0],
-        scale: [0, 1, 0.8, 0.5],
-        y: [0, -50, -100],
-        x: [0, (Math.random() - 0.5) * 30, (Math.random() - 0.5) * 60],
-      }}
-      transition={{ 
-        duration: 4 + Math.random() * 2, 
-        delay, 
-        repeat: Infinity, 
-        repeatDelay: Math.random() * 3,
-        ease: 'easeOut'
-      }}
-      style={{
-        position: 'absolute',
-        left: `${x}%`,
-        top: `${y}%`,
-        width: size,
-        height: size,
-        borderRadius: '50%',
-        background: color,
-        boxShadow: `0 0 ${size * 3}px ${color}, 0 0 ${size * 6}px ${color}40`,
-        pointerEvents: 'none',
-        filter: 'blur(0.5px)',
-      }}
-    />
-  );
-}
-
-// Grid pattern background
-function GridPattern() {
-  return (
-    <svg 
-      style={{
-        position: 'absolute',
-        inset: 0,
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        opacity: 0.05,
-        zIndex: 1,
-      }} 
-      preserveAspectRatio="xMidYMid slice"
-    >
-      <defs>
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,245,255,0.3)" strokeWidth="0.5"/>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#grid)" />
-    </svg>
-  );
-}
-
-const particles = Array.from({ length: 25 }, (_, i) => ({
-  id: i,
-  x: Math.random() * 100,
-  y: 20 + Math.random() * 70,
-  delay: Math.random() * 5,
-  size: 3 + Math.random() * 12,
-  color: i % 3 === 0 ? 'rgba(0,245,255,0.8)' : i % 3 === 1 ? 'rgba(255,0,128,0.8)' : 'rgba(255,215,0,0.6)',
-}));
+import BackgroundEffects from '../components/BackgroundEffects';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -77,17 +11,7 @@ export default function Home() {
 
   return (
     <div className="home-page stars-bg">
-      {/* Grid Pattern Background */}
-      <GridPattern />
-      
-      {/* Enhanced background gradients */}
-      <div style={{
-        position: 'absolute',
-        inset: 0,
-        background: 'radial-gradient(circle at 20% 50%, rgba(0,245,255,0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,0,128,0.08) 0%, transparent 50%)',
-        pointerEvents: 'none',
-        zIndex: 0,
-      }} />
+      <BackgroundEffects />
 
       {/* Profile Widget - Enhanced */}
       <motion.div
@@ -124,43 +48,6 @@ export default function Home() {
           <div style={{ fontSize: '0.9rem', color: 'var(--gold)', fontWeight: '700' }}>{xp} XP</div>
         </div>
       </motion.div>
-
-      {/* Background particles - Enhanced */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}>
-        {particles.map((p) => (
-          <Particle key={p.id} {...p} />
-        ))}
-      </div>
-
-      {/* Animated glow orbs */}
-      <motion.div
-        animate={{ 
-          scale: [1, 1.1, 1],
-          opacity: [0.08, 0.15, 0.08],
-        }}
-        transition={{ duration: 8, repeat: Infinity }}
-        style={{
-          position: 'absolute', left: '10%', top: '20%',
-          width: '350px', height: '350px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(0,245,255,0.1) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          zIndex: 1,
-        }} 
-      />
-      <motion.div
-        animate={{ 
-          scale: [1, 1.15, 1],
-          opacity: [0.08, 0.12, 0.08],
-        }}
-        transition={{ duration: 10, repeat: Infinity, delay: 1 }}
-        style={{
-          position: 'absolute', right: '10%', bottom: '20%',
-          width: '350px', height: '350px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255,0,128,0.1) 0%, transparent 70%)',
-          pointerEvents: 'none',
-          zIndex: 1,
-        }} 
-      />
 
       {/* Logo Section - Enhanced with more animation */}
       <motion.div

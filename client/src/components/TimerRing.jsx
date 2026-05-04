@@ -26,18 +26,11 @@ export default function TimerRing({ timeLeft, totalTime = 15, isUrgent }) {
   const dashOffset = CIRCUMFERENCE * (1 - ratio);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '0.2rem',
-    }}>
+    <div className="timer-ring-container">
       <svg
-        width="100"
-        height="100"
         viewBox="0 0 100 100"
+        className="timer-svg"
         style={{
-          transform: 'rotate(-90deg)',
           animation: isUrgent ? 'pulse 0.6s ease-in-out infinite' : 'none',
           filter: isUrgent ? `drop-shadow(0 0 8px ${strokeColor})` : 'none',
         }}
@@ -80,14 +73,9 @@ export default function TimerRing({ timeLeft, totalTime = 15, isUrgent }) {
       </svg>
 
       {/* Number overlay */}
-      <div style={{
-        position: 'absolute',
-        fontFamily: 'var(--font-display)',
-        fontSize: '1.5rem',
-        fontWeight: '700',
+      <div className="timer-number" style={{
         color: isUrgent ? '#ff4444' : 'var(--text-primary)',
         textShadow: isUrgent ? '0 0 15px rgba(255,68,68,0.8)' : 'none',
-        lineHeight: 1,
         animation: isUrgent ? 'pulse 0.6s ease-in-out infinite' : 'none',
       }}>
         {timeLeft}

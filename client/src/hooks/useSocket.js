@@ -196,9 +196,10 @@ export default function useSocket() {
     }
   }, [gameId]);
 
-  const emitEmote = useCallback((emote) => {
-    if (socketRef.current?.connected && gameId && playerId) {
-      socketRef.current.emit('game:emote', { gameId, playerId, emote });
+  const emitEmote = useCallback((emote, pid = null) => {
+    const targetPid = pid || playerId;
+    if (socketRef.current?.connected && gameId && targetPid) {
+      socketRef.current.emit('game:emote', { gameId, playerId: targetPid, emote });
     }
   }, [gameId, playerId]);
 

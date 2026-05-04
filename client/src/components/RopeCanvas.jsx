@@ -8,25 +8,76 @@ import * as THREE from 'three';
 function Humanoid({ position, color, isP1, ropePosition, emote }) {
   const groupRef = useRef();
   const torsoRef = useRef();
+  const frontArmRef = useRef();
+  const backArmRef = useRef();
   
   // intensity > 0 means pulling hard (winning), intensity < 0 means getting dragged.
   // ropePosition goes -5 (P1 wins) to +5 (P2 wins).
   const intensity = isP1 ? -ropePosition / 5 : ropePosition / 5;
 
+  const targetRotation = useRef(0);
+  const currentRotation = useRef(0);
+
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     if (groupRef.current) {
-      // Dramatic lean based on winning/losing
-      const baseLean = intensity > 0 ? -1.2 * intensity : -1.6 * intensity;
-      const sway = Math.sin(t * (6 + Math.abs(intensity) * 4)) * (0.08 + intensity * 0.1);
-      const bounce = Math.sin(t * 3) * 0.02;
+      // Base lean: Winning = leaning away from center, Losing = dragged towards center
+      // intensity > 0 (Winning), intensity < 0 (Losing)
+      const baseLean = intensity > 0 ? -0.8 * intensity : -1.8 * intensity; 
       
-      groupRef.current.rotation.z = isP1 ? (baseLean + sway + bounce) : -(baseLean + sway + bounce);
-      groupRef.current.position.y = Math.sin(t * 2.5) * 0.08;
+      let dynamicLean = 0;
+      let verticalBounce = 0;
+
+      if (intensity > 0) {
+        // Winning: Powerful rhythmic snaps backward
+        const cycle = (t * 3) % (Math.PI * 2);
+        const snap = Math.max(0, Math.sin(cycle)) ** 6; // sharp peak
+        dynamicLean = -0.4 * snap * intensity;
+        verticalBounce = snap * 0.1 * intensity;
+      } else if (intensity < 0) {
+        // Losing: Dragged forward, frantic slipping
+        const slipping = Math.sin(t * 20) * 0.05 + Math.sin(t * 35) * 0.03;
+        dynamicLean = slipping * Math.abs(intensity);
+        verticalBounce = Math.sin(t * 8) * 0.04 * Math.abs(intensity);
+      } else {
+        // Neutral: idle breathing
+        dynamicLean = Math.sin(t * 2) * 0.02;
+        verticalBounce = Math.sin(t * 4) * 0.02;
+      }
+
+      const totalLean = baseLean + dynamicLean;
+      
+      // Smooth interpolation for snappy but physical rotation
+      targetRotation.current = isP1 ? totalLean : -totalLean;
+      currentRotation.current = THREE.MathUtils.lerp(currentRotation.current, targetRotation.current, 0.2);
+
+      groupRef.current.rotation.z = currentRotation.current;
+      groupRef.current.position.y = verticalBounce - 0.05; // slight offset to keep feet grounded
     }
     
-    if (torsoRef.current && Math.abs(intensity) > 0.3) {
-      torsoRef.current.scale.z = 1 + Math.sin(t * 4) * 0.08 * Math.abs(intensity);
+    // Torso squashing (strain)
+    if (torsoRef.current && Math.abs(intensity) > 0.1) {
+      torsoRef.current.scale.z = 1 + Math.sin(t * (intensity > 0 ? 8 : 20)) * 0.06 * Math.abs(intensity);
+    }
+
+    // Arm pulling logic
+    if (frontArmRef.current && backArmRef.current) {
+      let armStrain = 0;
+      if (intensity > 0) {
+        // Arms pull in sync with the body snap
+        const cycle = (t * 3) % (Math.PI * 2);
+        const snap = Math.max(0, Math.sin(cycle)) ** 6;
+        armStrain = snap * 0.3 * intensity;
+      } else if (intensity < 0) {
+        // Arms stretched out frantically, vibrating
+        armStrain = -0.3 * Math.abs(intensity) + Math.sin(t * 30) * 0.06;
+      } else {
+        armStrain = Math.sin(t * 2) * 0.02;
+      }
+
+      const dir = isP1 ? 1 : -1;
+      frontArmRef.current.rotation.z = dir * (Math.PI / 2.4) + armStrain;
+      backArmRef.current.rotation.z = dir * (Math.PI / 2.4) + armStrain;
     }
   });
 
@@ -92,7 +143,7 @@ function Humanoid({ position, color, isP1, ropePosition, emote }) {
       )}
       
       {/* Front Arm (holding rope) - Enhanced */}
-      <mesh position={[dir * 0.25, 0.4, 0.15]} rotation={[0, 0, dir * Math.PI / 2.4]}>
+      <mesh ref={frontArmRef} position={[dir * 0.25, 0.4, 0.15]} rotation={[0, 0, dir * Math.PI / 2.4]}>
         <cylinderGeometry args={[0.045, 0.035, 0.65]} />
         <meshStandardMaterial 
           color={color} 
@@ -103,7 +154,7 @@ function Humanoid({ position, color, isP1, ropePosition, emote }) {
       </mesh>
       
       {/* Back Arm (holding rope) - Enhanced */}
-      <mesh position={[dir * 0.25, 0.4, -0.15]} rotation={[0, 0, dir * Math.PI / 2.4]}>
+      <mesh ref={backArmRef} position={[dir * 0.25, 0.4, -0.15]} rotation={[0, 0, dir * Math.PI / 2.4]}>
         <cylinderGeometry args={[0.045, 0.035, 0.65]} />
         <meshStandardMaterial 
           color={color} 
@@ -259,7 +310,7 @@ function Rope({ ropePosition }) {
 // ── Canvas Wrapper ─────────────────────────────────────────────────────────
 export default function RopeCanvas({ ropePosition = 0, currentEmotes = {} }) {
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'visible' }}>
       {/* Side labels */}
       <div style={{
         position: 'absolute', top: '50%', left: '6px', transform: 'translateY(-50%)',
@@ -274,7 +325,7 @@ export default function RopeCanvas({ ropePosition = 0, currentEmotes = {} }) {
 
       <Canvas
         camera={{ position: [0, 0, 5.5], fov: 50 }}
-        style={{ background: 'transparent' }}
+        style={{ background: 'transparent', overflow: 'visible' }}
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]}
       >

@@ -56,13 +56,7 @@ function ScoreColumn({ player, name, score, roundHistory, totalRounds }) {
   });
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '0.4rem',
-      position: 'relative',
-    }}>
+    <div className="score-column">
       {/* Floating particles */}
       {particles.map((id) => (
         <FloatingParticle key={id} id={id} player={player} />
@@ -140,14 +134,7 @@ export default function ScoreBoard({ player1, player2, scores, roundHistory, tot
   const pinkWidth = Math.max(5, (scores?.player2 || 0) / totalRounds * 100);
 
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr auto 1fr',
-      alignItems: 'center',
-      width: '100%',
-      padding: '1rem 1rem',
-      gap: '0.75rem',
-    }}>
+    <div className="scoreboard-container">
       <ScoreColumn
         player="player1"
         name={player1 || 'Player 1'}
@@ -157,13 +144,7 @@ export default function ScoreBoard({ player1, player2, scores, roundHistory, tot
       />
 
       {/* Enhanced Tug Visual */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '0.4rem',
-        minWidth: '120px',
-      }}>
+      <div className="tug-visual">
         {/* Rope tug bar */}
         <div style={{
           width: '100%',

@@ -325,7 +325,7 @@ export default function Game() {
           lastFeedback={p1Feedback}
         />
         {(isLocal || playerId === 'player1') && (
-          <EmoteBar onEmote={(emote) => emitEmote(emote)} disabled={phase !== 'active'} />
+          <EmoteBar onEmote={(emote) => emitEmote(emote, 'player1')} disabled={phase !== 'active'} />
         )}
       </PlayerColumn>
 
@@ -343,19 +343,12 @@ export default function Game() {
         </div>
 
         {/* 3D Rope */}
-        <div style={{ flex: 1, width: '100%', maxHeight: '175px', minHeight: '100px' }}>
+        <div className="rope-container">
           <RopeCanvas ropePosition={ropePosition} currentEmotes={currentEmotes} />
         </div>
 
         {/* Question + Timer */}
-        <div className="glass-strong" style={{
-          width: '100%',
-          padding: '0.9rem 1rem',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '0.6rem',
-        }}>
+        <div className="info-container glass-strong">
           <QuestionDisplay
             question={currentQuestion}
             phase={phase}
@@ -365,7 +358,7 @@ export default function Game() {
 
           {/* Timer ring */}
           {phase === 'active' && (
-            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="timer-wrapper">
               <TimerRing timeLeft={timeLeft} totalTime={15} isUrgent={isUrgent} />
             </div>
           )}
@@ -470,7 +463,7 @@ export default function Game() {
           lastFeedback={p2FeedbackResult}
         />
         {(!isBotMode && (isLocal || playerId === 'player2')) && (
-          <EmoteBar onEmote={(emote) => emitEmote(emote)} disabled={phase !== 'active'} />
+          <EmoteBar onEmote={(emote) => emitEmote(emote, 'player2')} disabled={phase !== 'active'} />
         )}
       </PlayerColumn>
     </div>
