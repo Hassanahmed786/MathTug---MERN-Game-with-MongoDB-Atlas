@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useGameStore from '../store/gameStore';
 import { resumeAudio } from '../utils/soundEffects';
 
@@ -20,9 +20,12 @@ import BackgroundEffects from './BackgroundEffects';
 
 export default function PlayerSetup() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setGameId, setJoinCode, setPlayerId, setIsLocal, setPlayerNames, setDifficulty, setTotalRounds, setPhase } = useGameStore();
 
-  const [activeTab, setActiveTab] = useState('host'); // 'host' or 'join'
+  // Pre-select join tab if navigated here via ?tab=join (from Home's "Join Room" button)
+  const initialTab = new URLSearchParams(location.search).get('tab') === 'join' ? 'join' : 'host';
+  const [activeTab, setActiveTab] = useState(initialTab);
   
   // Host state
   const [hostName, setHostName] = useState('');
@@ -115,6 +118,30 @@ export default function PlayerSetup() {
   return (
     <div className="setup-container stars-bg">
       <BackgroundEffects />
+      
+      {/* Back Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => navigate('/age-select')}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          left: '20px',
+          background: 'rgba(255,255,255,0.05)',
+          border: '2px solid rgba(255,255,255,0.2)',
+          color: 'var(--text-primary)',
+          padding: '0.6rem 1.2rem',
+          borderRadius: '50px',
+          fontFamily: 'var(--font-display)',
+          fontSize: '0.9rem',
+          cursor: 'pointer',
+          zIndex: 100,
+          transition: 'all 0.3s ease',
+        }}
+      >
+        ← Back
+      </motion.button>
       
       <div style={{ position: 'relative', zIndex: 10, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} style={{ textAlign: 'center', marginBottom: '1.5rem', zIndex: 10 }}>

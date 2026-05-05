@@ -214,9 +214,8 @@ export default function Game() {
 
   // AI Bot Integration
   const isBotMode = isLocal && playerNames.player2 === 'AI Bot';
-  if (isBotMode) {
-    useBot(id, phase, currentQuestion, submitP2, difficulty);
-  }
+  // Always call useBot (hooks cannot be conditional); it no-ops when not in bot mode
+  useBot(isBotMode ? id : null, phase, currentQuestion, submitP2, difficulty);
 
   // Timer
   const { timeLeft, isUrgent, start: startTimer, stop: stopTimer } = useTimer(15);
@@ -296,6 +295,33 @@ export default function Game() {
   return (
     <div className="game-layout">
       <div className={`bg-stars ${isSuddenDeath ? 'sudden-death-bg' : ''}`} />
+      
+      {/* Back Button */}
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => {
+          useGameStore.getState().resetGame();
+          navigate('/age-select');
+        }}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          left: '20px',
+          background: 'rgba(255,255,255,0.05)',
+          border: '2px solid rgba(255,255,255,0.2)',
+          color: 'var(--text-primary)',
+          padding: '0.6rem 1.2rem',
+          borderRadius: '50px',
+          fontFamily: 'var(--font-display)',
+          fontSize: '0.9rem',
+          cursor: 'pointer',
+          zIndex: 100,
+          transition: 'all 0.3s ease',
+        }}
+      >
+        ← Exit
+      </motion.button>
       
       {isSuddenDeath && (
         <div style={{ position: 'absolute', top: '10px', left: '50%', transform: 'translateX(-50%)', color: '#ff4444', fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 'bold', textShadow: '0 0 20px #ff4444', animation: 'glowPulse 1s infinite alternate', zIndex: 10 }}>

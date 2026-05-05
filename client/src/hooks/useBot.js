@@ -4,7 +4,7 @@ export function useBot(gameId, phase, currentQuestion, submitP2, difficulty = 'm
   const timeoutRef = useRef(null);
 
   useEffect(() => {
-    if (phase !== 'active' || !currentQuestion) return;
+    if (phase !== 'active' || !currentQuestion || !gameId) return;
 
     // Clear any existing timeout
     if (timeoutRef.current) clearTimeout(timeoutRef.current);

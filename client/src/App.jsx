@@ -2,6 +2,8 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
+import AgeSelect from './pages/AgeSelect';
+import About from './pages/About';
 import Game from './pages/Game';
 import Leaderboard from './pages/Leaderboard';
 import PlayerSetup from './components/PlayerSetup';
@@ -25,6 +27,8 @@ export default function App() {
         <AnimatePresence mode="wait">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/age-select" element={<AgeSelect />} />
             <Route path="/setup" element={<PlayerSetup />} />
             <Route path="/game/:id" element={<Game />} />
             <Route path="/leaderboard" element={<Leaderboard />} />

@@ -8,6 +8,7 @@ export const usePlayerStore = create(
       level: 1,
       matchesWon: 0,
       matchesPlayed: 0,
+      ageMode: 'explorers', // Default to Math Explorers
 
       addXp: (amount) => {
         const currentXp = get().xp + amount;
@@ -20,6 +21,10 @@ export const usePlayerStore = create(
           matchesPlayed: state.matchesPlayed + 1,
           matchesWon: isWin ? state.matchesWon + 1 : state.matchesWon,
         }));
+      },
+
+      setAgeMode: (modeId) => {
+        set({ ageMode: modeId });
       },
     }),
     {

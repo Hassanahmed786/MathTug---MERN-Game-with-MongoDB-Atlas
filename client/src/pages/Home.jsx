@@ -229,14 +229,14 @@ export default function Home() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
-        style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', zIndex: 10, marginTop: '1.5rem' }}
+        style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', zIndex: 10, marginTop: '2.5rem' }}
       >
         <motion.button
           id="home-start-btn"
           whileHover={{ scale: 1.08, boxShadow: '0 0 50px rgba(0,245,255,0.6)' }}
           whileTap={{ scale: 0.92 }}
           className="btn btn-cyan"
-          onClick={() => navigate('/setup')}
+          onClick={() => navigate('/age-select')}
           style={{ 
             fontSize: '1.1rem', 
             padding: '1rem 2.8rem',
@@ -249,6 +249,24 @@ export default function Home() {
           ⚡ Start New Game
         </motion.button>
         
+        <motion.button
+          id="home-join-btn"
+          whileHover={{ scale: 1.08, boxShadow: '0 0 40px rgba(0,255,136,0.5)' }}
+          whileTap={{ scale: 0.92 }}
+          className="btn btn-ghost"
+          onClick={() => navigate('/setup?tab=join')}
+          style={{ 
+            fontSize: '1.1rem', 
+            padding: '1rem 2.3rem',
+            fontWeight: '800',
+            letterSpacing: '0.1em',
+            border: '2px solid rgba(0,255,136,0.4)',
+            color: '#00ff88',
+          }}
+        >
+          🤝 Join Room
+        </motion.button>
+
         <motion.button
           id="home-leaderboard-btn"
           whileHover={{ scale: 1.08, boxShadow: '0 0 40px rgba(255,0,128,0.5)' }}
@@ -264,7 +282,24 @@ export default function Home() {
         >
           📊 Leaderboard
         </motion.button>
+
+        <motion.button
+          id="home-about-btn"
+          whileHover={{ scale: 1.08, boxShadow: '0 0 40px rgba(255,215,0,0.5)' }}
+          whileTap={{ scale: 0.92 }}
+          className="btn btn-ghost"
+          onClick={() => navigate('/about')}
+          style={{ 
+            fontSize: '1.1rem', 
+            padding: '1rem 2.3rem',
+            fontWeight: '800',
+            letterSpacing: '0.1em',
+          }}
+        >
+          ℹ️ About & How to Play
+        </motion.button>
       </motion.div>
+
     </div>
   );
 }
