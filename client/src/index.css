@@ -43,7 +43,8 @@ html,
 body,
 #root {
   width: 100%;
-  min-height: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -436,10 +437,10 @@ body {
   color: var(--cyan);
 }
 
-/* ── Home Page ─────────────────────────────────────────────────────── */
+/* ── Home Page (landscape-only: scrollable column for small phones) ── */
 .home-page {
   width: 100%;
-  min-height: 100dvh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -447,13 +448,12 @@ body {
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 4rem 1rem;
-  /* Padding for mobile */
+  padding: clamp(0.5rem, 2vh, 2rem) 1rem;
 }
 
 .home-logo {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 8vw, 6rem);
+  font-size: clamp(1.8rem, 5vh, 5rem);
   font-weight: 900;
   background: linear-gradient(135deg, var(--cyan) 0%, var(--gold) 50%, var(--pink) 100%);
   -webkit-background-clip: text;
@@ -467,10 +467,10 @@ body {
 
 .home-subtitle {
   font-family: var(--font-body);
-  font-size: clamp(0.9rem, 2vw, 1.2rem);
+  font-size: clamp(0.65rem, 1.5vh, 1rem);
   color: var(--text-muted);
-  margin-top: 0.5rem;
-  letter-spacing: 0.15em;
+  margin-top: 0.3rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -485,16 +485,16 @@ body {
 /* ── Player Setup ──────────────────────────────────────────────────── */
 .setup-container {
   width: 100%;
-  min-height: 100dvh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 2rem;
+  gap: clamp(0.5rem, 2vh, 2rem);
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
-  padding: 2rem 1rem;
+  padding: clamp(0.5rem, 2vh, 2rem) 1rem;
 }
 
 .setup-grid {
@@ -782,25 +782,26 @@ body {
   }
 }
 
+/* ── Root CSS vars: height-based for landscape phones ──────────────── */
+/* Base (desktop, tall screens ≥ 600px height) */
 :root {
-  /* ... existing variables ... */
-  --numpad-btn-size: clamp(40px, 12vw, 64px);
-  --numpad-display-height: clamp(48px, 10vw, 64px);
-  --numpad-display-font: clamp(1.2rem, 4vw, 2rem);
-  --numpad-display-font-small: clamp(1rem, 3vw, 1.5rem);
-  --numpad-gap: clamp(0.3rem, 1.5vw, 0.6rem);
-  --numpad-grid-gap: clamp(0.25rem, 0.8vw, 0.45rem);
-  --numpad-toggle-height: clamp(32px, 8vw, 40px);
+  --numpad-btn-size: clamp(36px, 9vh, 60px);
+  --numpad-display-height: clamp(38px, 8vh, 60px);
+  --numpad-display-font: clamp(1rem, 3.5vh, 1.8rem);
+  --numpad-display-font-small: clamp(0.85rem, 2.8vh, 1.4rem);
+  --numpad-gap: clamp(0.2rem, 1vh, 0.5rem);
+  --numpad-grid-gap: clamp(0.2rem, 0.7vh, 0.4rem);
+  --numpad-toggle-height: clamp(26px, 5vh, 38px);
 
-  --question-min-height: clamp(90px, 20vh, 130px);
-  --question-font: clamp(1.5rem, 4vw, 3rem);
-  --question-label-font: clamp(1rem, 2.5vw, 1.8rem);
+  --question-min-height: clamp(70px, 16vh, 120px);
+  --question-font: clamp(1.2rem, 4vh, 2.8rem);
+  --question-label-font: clamp(0.9rem, 2.5vh, 1.6rem);
 
-  --timer-size: clamp(70px, 15vw, 100px);
-  --timer-font: clamp(0.9rem, 2vw, 1.5rem);
+  --timer-size: clamp(55px, 12vh, 95px);
+  --timer-font: clamp(0.75rem, 2vh, 1.3rem);
 
-  --scoreboard-gap: clamp(0.4rem, 1.5vw, 0.75rem);
-  --tug-min-width: clamp(90px, 20vw, 120px);
+  --scoreboard-gap: clamp(0.3rem, 1vh, 0.6rem);
+  --tug-min-width: clamp(70px, 15vw, 110px);
 }
 
 /* ── ScoreBoard ────────────────────────────────────────────────────── */
@@ -830,21 +831,21 @@ body {
   min-width: var(--tug-min-width);
 }
 
-/* ── Timer Ring ────────────────────────────────────────────────────── */
+/* ── Rope container ────────────────────────────────────────────────── */
 .rope-container {
   flex: 1;
   width: 100%;
-  max-height: 175px;
-  min-height: 100px;
+  min-height: 0;    /* allow flex shrink */
+  max-height: 200px;
 }
 
 .info-container {
   width: 100%;
-  padding: 0.9rem 1rem;
+  padding: clamp(0.4rem, 1.2vh, 0.9rem) clamp(0.5rem, 1.5vw, 1rem);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
+  gap: clamp(0.25rem, 0.8vh, 0.6rem);
 }
 
 .timer-wrapper {
@@ -1028,11 +1029,18 @@ body {
   }
 }
 
-/* ════════════════════════════════════════════════════════════════════════
-   LANDSCAPE-ONLY LAYOUT (Optimized for horizontal screens)
-   ════════════════════════════════════════════════════════════════════════ */
 
-/* Landscape-only layout - fit perfectly in viewport */
+/* ═══════════════════════════════════════════════════════════════════════
+   LANDSCAPE-ONLY LAYOUT — keyed off viewport HEIGHT (the bottleneck on
+   phones in landscape). Covers:
+     ≤ 400px  → iPhone SE (375), Galaxy S8 (360)
+     401–480  → Pixel 7 (412), iPhone 12 (390), iPhone 14 Pro Max (430)
+     481–600  → Samsung Galaxy S20 Ultra (412 w/ large chrome → ~480)
+     601–900  → iPad Mini (768), iPad Air (820), iPad Pro (1024)
+     > 900    → Desktop / Surface
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Base game-layout rules */
 .game-layout {
   overflow: hidden !important;
   height: 100dvh;
@@ -1049,126 +1057,280 @@ body {
   flex-direction: column;
 }
 
-/* Small landscape (very narrow screens - phones in landscape) */
-@media (max-width: 900px) and (orientation: landscape),
-(max-height: 500px) and (orientation: landscape) {
+/* ── Tiny phones landscape: height ≤ 400px (iPhone SE, Galaxy S8) ── */
+@media (max-height: 400px) and (orientation: landscape) {
   :root {
-    --numpad-btn-size: 42px;
-    --numpad-display-height: 44px;
-    --numpad-display-font: 1.4rem;
-    --numpad-display-font-small: 1.1rem;
-    --numpad-gap: 0.2rem;
-    --numpad-grid-gap: 0.2rem;
-    --numpad-toggle-height: 32px;
+    --numpad-btn-size: 32px;
+    --numpad-display-height: 32px;
+    --numpad-display-font: 0.95rem;
+    --numpad-display-font-small: 0.8rem;
+    --numpad-gap: 0.12rem;
+    --numpad-grid-gap: 0.12rem;
+    --numpad-toggle-height: 22px;
 
-    --question-min-height: 80px;
-    --question-font: 1.5rem;
-    --question-label-font: 1.2rem;
+    --question-min-height: 52px;
+    --question-font: 1rem;
+    --question-label-font: 0.85rem;
 
-    --timer-size: 65px;
-    --timer-font: 1.1rem;
+    --timer-size: 48px;
+    --timer-font: 0.7rem;
 
-    --scoreboard-gap: 0.3rem;
-    --tug-min-width: 80px;
-  }
-
-  .scoreboard-container {
-    padding: 0.2rem 0.4rem;
-  }
-
-  .tug-visual {
-    gap: 0.2rem;
+    --scoreboard-gap: 0.15rem;
+    --tug-min-width: 55px;
   }
 
   .player-panel {
-    padding: 0.5rem 0.4rem;
-    flex: 0 0 24%;
-  }
-
-  .player-panel .player-name {
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .player-panel .score-display {
-    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    flex: 0 0 27%;
+    padding: 0.25rem 0.25rem;
+    gap: 0.15rem;
+    overflow-y: hidden;
   }
 
   .center-section {
-    padding: 0.4rem;
-    flex: 1;
+    padding: 0.2rem 0.25rem;
+    gap: 0.15rem;
   }
 
   .rope-container {
-    max-height: 90px !important;
-    min-height: 60px !important;
+    max-height: 72px !important;
+    min-height: 55px !important;
   }
 
   .info-container {
-    padding: 0.4rem 0.6rem;
-    gap: 0.3rem;
+    padding: 0.2rem 0.3rem;
+    gap: 0.15rem;
   }
 
-  .question-display {
-    padding: 0.4rem 0.8rem;
-    margin-bottom: 0.4rem;
+  .scoreboard-container {
+    padding: 0.1rem 0.25rem;
   }
 
-  .question-display .question-text {
-    font-size: 0.9rem;
-  }
-
-  .timer-ring {
-    width: 65px !important;
-    height: 65px !important;
-    font-size: 1.1rem !important;
-  }
+  .tug-visual { gap: 0.15rem; }
 
   .numpad-btn {
-    font-size: 1rem;
-    border-radius: 8px;
+    font-size: 0.85rem;
+    border-radius: 5px;
   }
 
-  .btn-submit {
-    font-size: 1.1rem;
+  .numpad-toggle {
+    font-size: 0.6rem;
+    height: 22px;
   }
 
   .btn {
-    padding: 0.4rem 0.8rem;
-    min-height: 36px;
-    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    min-height: 26px;
+    font-size: 0.58rem;
   }
+
+  /* Non-game pages */
+  .home-page,
+  .setup-container,
+  .leaderboard-page {
+    padding: 0.4rem 0.6rem;
+    gap: 0.3rem;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+
+  .home-logo { font-size: 1.3rem; }
+  .home-subtitle { font-size: 0.58rem; margin-top: 0.1rem; }
 }
 
-/* Medium landscape (tablets in landscape mode) */
-@media (max-width: 1200px) and (min-width: 900px) and (orientation: landscape) {
-  .player-panel {
-    padding: 1rem 0.8rem;
-    flex: 0 0 26%;
+/* ── Small phones landscape: 401–480px (Pixel 7 412, iPhone 12/14 Pro) ── */
+@media (min-height: 401px) and (max-height: 480px) and (orientation: landscape) {
+  :root {
+    --numpad-btn-size: 36px;
+    --numpad-display-height: 36px;
+    --numpad-display-font: 1.05rem;
+    --numpad-display-font-small: 0.88rem;
+    --numpad-gap: 0.17rem;
+    --numpad-grid-gap: 0.15rem;
+    --numpad-toggle-height: 26px;
+
+    --question-min-height: 62px;
+    --question-font: 1.15rem;
+    --question-label-font: 0.95rem;
+
+    --timer-size: 54px;
+    --timer-font: 0.78rem;
+
+    --scoreboard-gap: 0.2rem;
+    --tug-min-width: 65px;
   }
 
-  .player-panel .score-display {
-    font-size: clamp(2rem, 4vw, 3rem);
+  .player-panel {
+    flex: 0 0 26%;
+    padding: 0.35rem 0.35rem;
+    gap: 0.2rem;
+    overflow-y: hidden;
   }
 
   .center-section {
-    padding: 0.75rem;
+    padding: 0.28rem 0.35rem;
+    gap: 0.2rem;
+  }
+
+  .rope-container {
+    max-height: 88px !important;
+    min-height: 65px !important;
+  }
+
+  .info-container {
+    padding: 0.28rem 0.45rem;
+    gap: 0.2rem;
+  }
+
+  .scoreboard-container {
+    padding: 0.12rem 0.35rem;
+  }
+
+  .numpad-btn {
+    font-size: 0.95rem;
+    border-radius: 7px;
+  }
+
+  .numpad-toggle {
+    font-size: 0.65rem;
   }
 
   .btn {
-    padding: 0.6rem 1.2rem;
-    min-height: 44px;
+    padding: 0.28rem 0.6rem;
+    min-height: 30px;
+    font-size: 0.62rem;
+  }
+
+  .home-logo { font-size: 1.65rem; }
+  .home-subtitle { font-size: 0.62rem; }
+}
+
+/* ── Medium phones landscape: 481–600px (larger Androids, iPhone 14 Pro Max 430→chrome≈480) ── */
+@media (min-height: 481px) and (max-height: 600px) and (orientation: landscape) {
+  :root {
+    --numpad-btn-size: 40px;
+    --numpad-display-height: 40px;
+    --numpad-display-font: 1.2rem;
+    --numpad-display-font-small: 1rem;
+    --numpad-gap: 0.22rem;
+    --numpad-grid-gap: 0.2rem;
+    --numpad-toggle-height: 29px;
+
+    --question-min-height: 72px;
+    --question-font: 1.4rem;
+    --question-label-font: 1.05rem;
+
+    --timer-size: 60px;
+    --timer-font: 0.88rem;
+
+    --scoreboard-gap: 0.28rem;
+    --tug-min-width: 75px;
+  }
+
+  .player-panel {
+    flex: 0 0 25%;
+    padding: 0.45rem 0.45rem;
+    gap: 0.28rem;
+  }
+
+  .center-section {
+    padding: 0.35rem 0.45rem;
+    gap: 0.28rem;
+  }
+
+  .rope-container {
+    max-height: 110px !important;
+    min-height: 78px !important;
+  }
+
+  .info-container {
+    padding: 0.35rem 0.55rem;
+    gap: 0.28rem;
+  }
+
+  .btn {
+    padding: 0.35rem 0.8rem;
+    min-height: 34px;
+    font-size: 0.68rem;
+  }
+
+  .home-logo { font-size: 2rem; }
+  .home-subtitle { font-size: 0.68rem; }
+}
+
+/* ── Tablets landscape: 601–900px (iPad Mini 768, iPad Air 820) ── */
+@media (min-height: 601px) and (max-height: 900px) and (orientation: landscape) {
+  :root {
+    --numpad-btn-size: 50px;
+    --numpad-display-height: 50px;
+    --numpad-display-font: 1.55rem;
+    --numpad-display-font-small: 1.15rem;
+    --numpad-gap: 0.32rem;
+    --numpad-grid-gap: 0.28rem;
+    --numpad-toggle-height: 33px;
+
+    --question-min-height: 90px;
+    --question-font: 1.9rem;
+    --question-label-font: 1.35rem;
+
+    --timer-size: 75px;
+    --timer-font: 1.05rem;
+
+    --scoreboard-gap: 0.38rem;
+    --tug-min-width: 90px;
+  }
+
+  .player-panel {
+    flex: 0 0 24%;
+    padding: 0.75rem 0.65rem;
+    gap: 0.38rem;
+  }
+
+  .center-section {
+    padding: 0.55rem 0.65rem;
+    gap: 0.38rem;
+  }
+
+  .rope-container {
+    max-height: 155px !important;
+    min-height: 105px !important;
+  }
+
+  .btn {
+    padding: 0.55rem 1.3rem;
+    min-height: 40px;
     font-size: 0.8rem;
   }
 }
 
-/* Large landscape (desktop/wide screens) */
-@media (min-width: 1200px) {
-  .player-panel {
-    padding: 1.5rem 1rem;
+/* ── Desktop / large: height > 900px ── */
+@media (min-height: 901px) {
+  :root {
+    --numpad-btn-size: 58px;
+    --numpad-display-height: 58px;
+    --numpad-display-font: 1.9rem;
+    --numpad-display-font-small: 1.45rem;
+    --numpad-gap: 0.48rem;
+    --numpad-grid-gap: 0.42rem;
+    --numpad-toggle-height: 37px;
+
+    --question-min-height: 115px;
+    --question-font: 2.6rem;
+    --question-label-font: 1.7rem;
+
+    --timer-size: 92px;
+    --timer-font: 1.35rem;
+
+    --scoreboard-gap: 0.65rem;
+    --tug-min-width: 110px;
   }
 
-  .player-panel .score-display {
-    font-size: clamp(2.5rem, 4vw, 3.5rem);
+  .player-panel {
+    flex: 0 0 22%;
+    padding: 1.2rem 0.9rem;
+    gap: 0.5rem;
+  }
+
+  .rope-container {
+    max-height: 200px;
   }
 }
